@@ -4,6 +4,7 @@ import data from './data.js';
 import dotenv from 'dotenv';
 import userRouter from './routers/userRouter.js';
 import orderRoute from './routers/orderRouter.js';
+const morgan = require('morgan');
 dotenv.config();
 
 const app = express();
@@ -15,6 +16,12 @@ mongoose.connect('mongodb://localhost:27017/ecart', {
   useNewUrlParser: true,
   
 });
+
+//morgan for loging
+app.use(morgan('combined'));
+app.use(morgan('combined',{
+  stream: fs.createWriteStream(process.env.LOGFILEPATH.toString(), {flags: 'a'})
+}));
 
 app.get("/api/products/:id",(req , res)=>{
     const product = data.products.find((x) => x.id === req.params.id);
